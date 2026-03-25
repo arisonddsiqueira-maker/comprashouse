@@ -3,130 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estoque Residencial</title>
+    <title>Meu Estoque Residencial</title>
     <style>
         :root {
             --primary: #2c3e50;
             --accent: #27ae60;
             --warning: #e74c3c;
             --light: #f4f7f6;
+            --gray: #95a5a6;
         }
 
-        body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; padding-bottom: 60px; }
-        header { background: var(--primary); color: white; padding: 1rem; text-align: center; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--light); margin: 0; padding-bottom: 80px; color: var(--primary); }
+        header { background: var(--primary); color: white; padding: 1rem; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         
         .container { padding: 15px; max-width: 600px; margin: auto; }
-        .card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .card { background: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #eee; }
         
-        h2 { border-bottom: 2px solid var(--accent); padding-bottom: 5px; color: var(--primary); }
+        h2 { border-left: 4px solid var(--accent); padding-left: 10px; font-size: 1.2rem; margin-top: 0; }
         
-        .form-group { margin-bottom: 10px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; color: #555; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
         
-        .btn { background: var(--accent); color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; }
-        .btn-scan { background: #3498db; margin-bottom: 10px; }
+        .btn { background: var(--accent); color: white; border: none; padding: 14px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; font-size: 1rem; transition: 0.3s; }
+        .btn:active { transform: scale(0.98); opacity: 0.9; }
+        .btn-scan { background: #3498db; margin-bottom: 15px; }
+        .btn-update { background: var(--primary); margin-top: 10px; padding: 8px; }
 
-        /* Lista de Compras em Destaque */
-        .item-alerta { border-left: 5px solid var(--warning); padding: 10px; margin: 5px 0; background: #fff5f5; display: flex; justify-content: space-between; }
-        .qtd-comprar { font-weight: bold; color: var(--warning); font-size: 1.2rem; }
+        /* Lista de Compras */
+        .item-compra { border-left: 5px solid var(--warning); padding: 12px; margin-bottom: 10px; background: #fff; display: flex; justify-content: space-between; align-items: center; border-radius: 4px; }
+        .info-produto { display: flex; flex-direction: column; }
+        .nome-prod { font-weight: bold; font-size: 1.1rem; }
+        .meta-prod { font-size: 0.85rem; color: var(--gray); }
+        .qtd-badge { background: var(--warning); color: white; padding: 5px 12px; border-radius: 20px; font-weight: bold; }
 
-        /* Navegação inferior (Simulação de App) */
-        nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; border-top: 1px solid #ddd; }
-        nav button { flex: 1; padding: 15px; border: none; background: none; font-size: 0.8rem; cursor: pointer; }
+        /* Navegação */
+        nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; border-top: 1px solid #eee; height: 65px; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
+        nav button { flex: 1; border: none; background: none; font-size: 0.75rem; cursor: pointer; color: var(--gray); display: flex; flex-direction: column; align-items: center; justify-content: center; }
         nav button.active { color: var(--accent); font-weight: bold; }
         
         .hidden { display: none; }
+        .empty-state { text-align: center; color: var(--gray); padding: 40px 20px; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1 id="app-title">Estoque Residencial</h1>
+    <h1 style="margin:0; font-size: 1.4rem;">🏠 Meu Estoque</h1>
 </header>
 
 <div class="container">
     
-    <section id="tela-inicial">
-        <h2>🛒 O que comprar</h2>
-        <div id="lista-compras">
-            <div class="item-alerta">
-                <div><strong>Leite Integral</strong><br><small>Marca: Piracanjuba (1L)</small></div>
-                <div class="qtd-comprar">Faltam: 4</div>
+    <section id="tela-inicio">
+        <h2>🛒 Lista de Compras</h2>
+        <div id="lista-compras-container">
             </div>
-        </div>
     </section>
 
     <section id="tela-cadastro" class="hidden">
-        <h2>🆕 Novo Produto</h2>
-        <button class="btn btn-scan">📷 Escanear Código de Barras</button>
+        <h2>🆕 Cadastrar Produto</h2>
+        <button class="btn btn-scan" onclick="alert('Funcionalidade de API de código de barras requer integração HTTPS e biblioteca externa (ex: QuaggaJS)')">📷 Escanear Código</button>
         
-        <div class="form-group">
-            <label>Categoria</label>
-            <select id="prod-cat">
-                <option>Alimentos</option>
-                <option>Limpeza</option>
-                <option>Higiene</option>
-            </select>
+        <div class="card">
+            <div class="form-group">
+                <label>Categoria</label>
+                <select id="p-categoria">
+                    <option value="Alimentos">Alimentos</option>
+                    <option value="Limpeza">Limpeza</option>
+                    <option value="Higiene">Higiene</option>
+                    <option value="Outros">Outros</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Nome</label><input type="text" id="p-nome"></div>
+            <div class="form-group"><label>Marca</label><input type="text" id="p-marca"></div>
+            <div class="form-group"><label>Medida (un, kg, ml)</label><input type="text" id="p-medida"></div>
+            <div style="display:flex; gap:10px;">
+                <div class="form-group" style="flex:1"><label>Estoque Atual</label><input type="number" id="p-atual"></div>
+                <div class="form-group" style="flex:1"><label>Estoque Ideal</label><input type="number" id="p-ideal"></div>
+            </div>
+            <button class="btn" onclick="salvarProduto()">Salvar Produto</button>
         </div>
-        <div class="form-group"><label>Nome</label><input type="text" placeholder="Ex: Arroz"></div>
-        <div class="form-group"><label>Marca</label><input type="text" placeholder="Ex: Tio João"></div>
-        <div class="form-group"><label>Medida</label><input type="text" placeholder="Ex: 5kg"></div>
-        <div class="form-row" style="display:flex; gap:10px;">
-            <div class="form-group" style="flex:1"><label>Estoque Atual</label><input type="number"></div>
-            <div class="form-group" style="flex:1"><label>Estoque Ideal</label><input type="number"></div>
-        </div>
-        <div class="form-group">
-            <label>Foto do Produto</label>
-            <input type="file" accept="image/*" capture="environment">
-        </div>
-        <button class="btn">Salvar Produto</button>
     </section>
 
     <section id="tela-contagem" class="hidden">
-        <h2>📋 Contagem de Estoque</h2>
-        <div class="form-group">
-            <select id="filtro-categoria">
-                <option value="">Filtrar por Categoria...</option>
-                <option>Alimentos</option>
-                <option>Limpeza</option>
-            </select>
-        </div>
-        <div id="itens-contagem">
-            <div class="card">
-                <h3>Detergente</h3>
-                <p>Medida: 500ml</p>
-                <label>Estoque Atual:</label>
-                <input type="number" value="2" style="width: 80px; margin-bottom: 10px;">
-                <button class="btn" style="background: var(--primary);">Atualizar</button>
+        <h2>📋 Conferir Estoque</h2>
+        <select id="filtro-cat" onchange="renderizarContagem()" style="margin-bottom: 15px;">
+            <option value="Todos">Todas as Categorias</option>
+            <option value="Alimentos">Alimentos</option>
+            <option value="Limpeza">Limpeza</option>
+            <option value="Higiene">Higiene</option>
+        </select>
+        <div id="contagem-lista">
             </div>
-        </div>
     </section>
 </div>
 
 <nav>
-    <button onclick="mudarTela('inicial')" class="active">INÍCIO</button>
-    <button onclick="mudarTela('cadastro')">CADASTRO</button>
-    <button onclick="mudarTela('contagem')">CONTAGEM</button>
+    <button onclick="mudarTela('inicio')" id="btn-inicio" class="active">🏠<br>Início</button>
+    <button onclick="mudarTela('cadastro')" id="btn-cadastro">➕<br>Novo</button>
+    <button onclick="mudarTela('contagem')" id="btn-contagem">✔️<br>Contagem</button>
 </nav>
 
 <script>
+    let produtos = JSON.parse(localStorage.getItem('meuEstoque')) || [];
+
     function mudarTela(tela) {
-        // Esconder todas as seções
         document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-        // Mostrar a selecionada
-        document.getElementById('tela-' + tela).classList.remove('hidden');
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
         
-        // Atualizar botões da nav
-        document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
-        event.currentTarget.classList.add('active');
+        document.getElementById('tela-' + tela).classList.remove('hidden');
+        document.getElementById('btn-' + tela).classList.add('active');
+
+        if(tela === 'inicio') renderizarCompras();
+        if(tela === 'contagem') renderizarContagem();
     }
 
-    // Exemplo de lógica para preenchimento automático (Mock)
-    document.querySelector('.btn-scan').addEventListener('click', () => {
-        alert("Abrindo câmera para ler código de barras...");
-        // Aqui entraria a lógica de API de produtos
-    });
+    function salvarProduto() {
+        const novo = {
+            id: Date.now(),
+            categoria: document.getElementById('p-categoria').value,
+            nome: document.getElementById('p-nome').value,
+            marca: document.getElementById('p-marca').value,
+            medida: document.getElementById('p-medida').value,
+            atual: parseInt(document.getElementById('p-atual').value) || 0,
+            ideal: parseInt(document.getElementById('p-ideal').value) || 0
+        };
+
+        if(!novo.nome) return alert("Digite o nome do produto!");
+
+        produtos.push(novo);
+        localStorage.setItem('meuEstoque', JSON.stringify(produtos));
+        alert("Produto salvo!");
+        limparForm();
+        mudarTela('inicio');
+    }
+
+    function limparForm() {
+        document.querySelectorAll('#tela-cadastro input').forEach(i => i.value = '');
+    }
+
+    function renderizarCompras() {
+        const container = document.getElementById('lista-compras-container');
+        const faltantes = produtos.filter(p => p.atual < p.ideal);
+
+        if(faltantes.length === 0) {
+            container.innerHTML = '<div class="empty-state">🎉 Tudo em dia! Nada para comprar.</div>';
+            return;
+        }
+
+        container.innerHTML = faltantes.map(p => `
+            <div class="item-compra">
+                <div class="info-produto">
+                    <span class="nome-prod">${p.nome}</span>
+                    <span class="meta-prod">${p.marca} | ${p.medida}</span>
+                </div>
+                <div class="qtd-badge">Comprar: ${p.ideal - p.atual}</div>
+            </div>
+        `).join('');
+    }
+
+    function renderizarContagem() {
+        const container = document.getElementById('contagem-lista');
+        const filtro = document.getElementById('filtro-cat').value;
+        
+        const filtrados = filtro === 'Todos' ? produtos : produtos.filter(p => p.categoria === filtro);
+
+        container.innerHTML = filtrados.map(p => `
+            <div class="card">
+                <strong>${p.nome} (${p.medida})</strong>
+                <div style="margin-top:10px">
+                    <label>Estoque Atual:</label>
+                    <input type="number" value="${p.atual}" onchange="atualizarEstoque(${p.id}, this.value)">
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function atualizarEstoque(id, novaQtd) {
+        const index = produtos.findIndex(p => p.id === id);
+        produtos[index].atual = parseInt(novaQtd);
+        localStorage.setItem('meuEstoque', JSON.stringify(produtos));
+    }
+
+    // Inicialização
+    renderizarCompras();
 </script>
 
 </body>
